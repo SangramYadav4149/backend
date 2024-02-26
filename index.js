@@ -14,7 +14,7 @@ connectMongoDb();
 server.use(express.json());
 server.use(cors());
 server.use("/", (req, res) => {
-  res.send("hello");
+  res.send("hellob");
 });
 server.use("/promaneger/api/user", registerRouter);
 server.use("/promaneger/api/user", loginRouter);
