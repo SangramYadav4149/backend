@@ -6,9 +6,11 @@ import loginRouter from "./Routes/Login.js";
 import tasksRouter from "./Routes/Tasks.js";
 import cors from "cors";
 import userRouter from "./Routes/User.js";
+
 dotenv.config();
-const server = express();
 connectMongoDb();
+const server = express();
+
 server.use(express.json());
 server.use(cors());
 server.use("/", (req, res) => {
