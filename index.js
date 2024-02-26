@@ -8,9 +8,9 @@ import cors from "cors";
 import userRouter from "./Routes/User.js";
 
 dotenv.config();
-connectMongoDb();
-const server = express();
 
+const server = express();
+connectMongoDb();
 server.use(express.json());
 server.use(cors());
 server.use("/", (req, res) => {
