@@ -32,46 +32,64 @@ const getUserAllTasks = async (req, res) => {
   }
 };
 
-const changeUserPassword = async (req, res) => {
+const changeUserInfo = async (req, res) => {
   try {
     const { _id } = req.user;
-    const { password, name } = req.body;
+    const { oldPassword, newPassword, name } = req.body;
 
-    if (_id && password && name) {
-      const count = await bcrypt.genSalt(5);
-      const hashedPassword = await bcrypt.hash(password, count);
-      const user = await User.findByIdAndUpdate(
-        _id,
-        {
-          password: hashedPassword,
-          name: name,
-        },
-        { new: true }
+    if (_id && oldPassword && newPassword) {
+      const user = await User.findById(_id);
+      const varifyOldPassword = await bcrypt.compare(
+        oldPassword,
+        user.password
       );
 
-      res.status(201).json({ user: user });
-    } else if (_id && password) {
-      const count = await bcrypt.genSalt(5);
-      const hashedPassword = await bcrypt.hash(password, count);
-      const user = await User.findByIdAndUpdate(
-        _id,
-        {
-          password: hashedPassword,
-          name: name,
-        },
-        { new: true }
-      );
+      if (varifyOldPassword) {
+        console.log(varifyOldPassword);
+        const count = await bcrypt.genSalt(5);
+        const hashedPassword = await bcrypt.hash(newPassword, count);
+        const updateUser = await User.findByIdAndUpdate(
+          _id,
+          {
+            password: hashedPassword,
+          },
+          { new: true }
+        );
 
-      res.status(201).json({ user: user });
-    } else if (name) {
-      const user = await User.findByIdAndUpdate(
+        res.status(201).json({ user: updateUser });
+      }
+    } else if (_id && name) {
+      const updateUser = await User.findByIdAndUpdate(
         _id,
         {
           name: name,
         },
         { new: true }
       );
-      res.status(201).json({ user: user });
+
+      res.status(201).json({ user: updateUser });
+    } else if (_id && oldPassword && newPassword & name) {
+      const user = await User.findById(_id);
+      const varifyOldPassword = await bcrypt.compare(
+        oldPassword,
+        user.password
+      );
+
+      if (varifyOldPassword) {
+        console.log(varifyOldPassword);
+        const count = await bcrypt.genSalt(5);
+        const hashedPassword = await bcrypt.hash(newPassword, count);
+        const updateUser = await User.findByIdAndUpdate(
+          _id,
+          {
+            password: hashedPassword,
+            name: name,
+          },
+          { new: true }
+        );
+
+        res.status(201).json({ user: updateUser });
+      }
     } else {
       {
         res.status(400).json({ message: "All inputs are required!" });
@@ -81,4 +99,4 @@ const changeUserPassword = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-export { getUser, getUserAllTasks, changeUserPassword };
+export { getUser, getUserAllTasks, changeUserInfo };
